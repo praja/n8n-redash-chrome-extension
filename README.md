@@ -15,14 +15,14 @@ A Chrome extension that integrates AI-powered SQL query generation into Redash's
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/redash-agent.git
+git clone https://github.com/praja/n8n-redash-chrome-extension.git
 ```
 
 2. Open Chrome and navigate to `chrome://extensions/`
 
 3. Enable "Developer mode" in the top right corner
 
-4. Click "Load unpacked" and select the cloned repository directory
+4. Click "Load unpacked" and select the `extension` directory from the cloned repository
 
 ## Configuration
 
@@ -51,11 +51,20 @@ git clone https://github.com/yourusername/redash-agent.git
 
 ### Project Structure
 
-- `content.js`: Main extension logic
-- `popup.html` & `popup.js`: Settings interface
-- `config.js`: Configuration management
-- `styles.css`: UI styling
-- `manifest.json`: Extension manifest
+```
+.
+├── extension/              # Chrome extension files
+│   ├── content.js         # Main extension logic
+│   ├── popup.html         # Settings interface HTML
+│   ├── popup.js           # Settings interface logic
+│   ├── config.js          # Configuration management
+│   ├── styles.css         # UI styling
+│   ├── manifest.json      # Extension manifest
+│   ├── background.js      # Background script
+│   └── marked.min.js      # Markdown rendering library
+├── README.md              # Project documentation
+└── LICENSE                # Apache 2.0 License
+```
 
 ### Dependencies
 
