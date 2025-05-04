@@ -79,7 +79,14 @@ git clone https://github.com/yourusername/redash-agent.git
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+The Apache License 2.0 is chosen because:
+- It provides a good balance between permissiveness and protection
+- It's widely used and well-understood in the open-source community
+- It includes an express grant of patent rights
+- It requires preservation of copyright and license notices
+- It's compatible with most other open-source licenses
 
 ## Acknowledgments
 
