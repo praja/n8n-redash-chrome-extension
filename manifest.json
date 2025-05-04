@@ -1,0 +1,38 @@
+{
+    "manifest_version": 3,
+    "name": "Redash AI Query Generator",
+    "version": "1.0",
+    "description": "Generate SQL queries using AI on Redash's new query page",
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "storage",
+        "tabs"
+    ],
+    "host_permissions": [
+        "https://analytics.praja.app/*",
+        "https://praja.app.n8n.cloud/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://analytics.praja.app/queries/new"
+            ],
+            "js": [
+                "marked.min.js",
+                "content.js"
+            ],
+            "css": [
+                "styles.css"
+            ],
+            "run_at": "document_end",
+            "all_frames": true
+        }
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html"
+    }
+}
