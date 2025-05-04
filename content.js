@@ -154,6 +154,53 @@ function removeLoadingState() {
     }
 }
 
+// Function to add copy button to SQL code blocks
+function addCopyButtons() {
+    const codeBlocks = document.querySelectorAll('.message.assistant pre code.language-sql');
+    codeBlocks.forEach(codeBlock => {
+        // Check if button already exists
+        if (codeBlock.parentElement.querySelector('.copy-query-btn')) {
+            return;
+        }
+
+        const copyButton = document.createElement('button');
+        copyButton.className = 'copy-query-btn';
+        copyButton.innerHTML = '<i class="fa fa-copy"></i>';
+        copyButton.title = 'Copy Query';
+        copyButton.onclick = () => copyQuery(codeBlock.textContent);
+
+        // Position the button
+        codeBlock.parentElement.style.position = 'relative';
+        copyButton.style.position = 'absolute';
+        copyButton.style.bottom = '8px';
+        copyButton.style.right = '8px';
+
+        codeBlock.parentElement.appendChild(copyButton);
+    });
+}
+
+// Function to copy query to clipboard
+function copyQuery(query) {
+    // Trim whitespace from the query
+    const trimmedQuery = query.trim();
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(trimmedQuery).then(() => {
+        // Show success message
+        const successMessage = document.createElement('div');
+        successMessage.className = 'copy-success-message';
+        successMessage.textContent = 'Query copied to clipboard!';
+        document.body.appendChild(successMessage);
+
+        // Remove success message after 2 seconds
+        setTimeout(() => {
+            successMessage.remove();
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy query:', err);
+    });
+}
+
 // Function to show text line by line with fade-in
 function showTextLineByLine(element, text, speed = 100) {
     // First, parse the markdown to HTML
@@ -179,6 +226,12 @@ function showTextLineByLine(element, text, speed = 100) {
 
             element.appendChild(lineElement);
             currentElement++;
+
+            // Add copy buttons after each SQL code block is added
+            setTimeout(() => {
+                addCopyButtons();
+            }, speed);
+
             setTimeout(showNextElement, speed);
         }
     }

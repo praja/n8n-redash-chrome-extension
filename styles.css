@@ -242,3 +242,64 @@ button.query-editor-controls-button:hover {
         opacity: 1;
     }
 }
+
+/* Copy button styles */
+.copy-query-btn {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    opacity: 0.8;
+}
+
+.copy-query-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.copy-query-btn i {
+    font-size: 16px;
+}
+
+/* Success message styles */
+.copy-success-message {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #2196F3;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-in 1.7s forwards;
+    z-index: 1000;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
