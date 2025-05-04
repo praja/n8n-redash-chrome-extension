@@ -10,16 +10,16 @@
         "tabs"
     ],
     "host_permissions": [
-        "https://analytics.praja.app/*",
-        "https://praja.app.n8n.cloud/*"
+        "*://*/*"
     ],
     "content_scripts": [
         {
             "matches": [
-                "https://analytics.praja.app/queries/new"
+                "*://*/queries/new"
             ],
             "js": [
                 "marked.min.js",
+                "config.js",
                 "content.js"
             ],
             "css": [

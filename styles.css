@@ -245,27 +245,25 @@ button.query-editor-controls-button:hover {
 
 /* Copy button styles */
 .copy-query-btn {
-    background-color: #2196F3;
-    color: white;
-    border: none;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #d9d9d9;
     border-radius: 4px;
-    width: 32px;
-    height: 32px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
-    opacity: 0.8;
-}
-
-.copy-query-btn:hover {
-    opacity: 1;
-    transform: scale(1.1);
+    transition: all 0.3s;
+    padding: 0;
 }
 
 .copy-query-btn i {
-    font-size: 16px;
+    font-size: 12px;
+    color: #1890ff;
 }
 
 /* Success message styles */

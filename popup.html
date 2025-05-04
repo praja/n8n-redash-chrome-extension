@@ -2,29 +2,82 @@
 <html>
 
 <head>
-    <title>Redash AI Query Generator</title>
+    <title>Redash AI Query Generator Settings</title>
     <style>
         body {
-            width: 300px;
-            padding: 15px;
+            width: 400px;
+            padding: 20px;
             font-family: Arial, sans-serif;
         }
 
-        h1 {
-            font-size: 18px;
-            margin: 0 0 15px 0;
+        .form-group {
+            margin-bottom: 15px;
         }
 
-        p {
-            font-size: 14px;
-            color: #666;
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
         }
     </style>
 </head>
 
 <body>
-    <h1>Redash AI Query Generator</h1>
-    <p>This extension helps you generate SQL queries using AI on Redash's new query page.</p>
+    <div class="form-group">
+        <label for="n8nUrl">n8n Webhook URL:</label>
+        <input type="text" id="n8nUrl" placeholder="https://your-n8n-instance.com/webhook/your-workflow">
+    </div>
+    <div class="form-group">
+        <label for="n8nUsername">n8n Username:</label>
+        <input type="text" id="n8nUsername" placeholder="Enter n8n username">
+    </div>
+    <div class="form-group">
+        <label for="n8nPassword">n8n Password:</label>
+        <input type="password" id="n8nPassword" placeholder="Enter n8n password">
+    </div>
+    <button id="saveSettings">Save Settings</button>
+    <div id="status" class="status"></div>
+
+    <script src="popup.js"></script>
 </body>
 
 </html>

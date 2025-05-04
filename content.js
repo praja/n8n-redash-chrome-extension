@@ -17,21 +17,8 @@ function injectAIButton() {
     aiButton.innerHTML = '<i class="fa fa-flash" style="color: #ffd700;"></i>';
     aiButton.onclick = toggleChatPanel;
 
-    // Add hover event listeners for tooltip
-    aiButton.addEventListener('mouseenter', () => {
-        tooltipWrapper.style.display = 'block';
-        const buttonRect = aiButton.getBoundingClientRect();
-        tooltipWrapper.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
-        tooltipWrapper.style.top = `${buttonRect.top - 10}px`;
-    });
-
-    aiButton.addEventListener('mouseleave', () => {
-        tooltipWrapper.style.display = 'none';
-    });
-
     console.log('Created AI button, appending to controls div...');
     controlsDiv.appendChild(aiButton);
-    document.body.appendChild(tooltipWrapper);
     console.log('AI button injected successfully');
 }
 
@@ -256,13 +243,21 @@ async function sendMessage() {
         // Show loading state
         showLoadingState();
 
-        // Make API call to n8n using the same chat session ID
-        const response = await fetch('https://praja.app.n8n.cloud/webhook/71de9661-9688-4be4-b249-4dd49a6a0363', {
+        // Create basic auth header if credentials are provided
+        const headers = {
+            'Content-Type': 'application/json',
+            'chatSessionId': chatSessionId
+        };
+
+        if (config.N8N_USERNAME && config.N8N_PASSWORD) {
+            const auth = btoa(`${config.N8N_USERNAME}:${config.N8N_PASSWORD}`);
+            headers['Authorization'] = `Basic ${auth}`;
+        }
+
+        // Make API call to n8n using the URL from config
+        const response = await fetch(config.N8N_WEBHOOK_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'chatSessionId': chatSessionId
-            },
+            headers: headers,
             body: JSON.stringify({
                 chatInput: message
             })
@@ -372,4 +367,11 @@ if (document.readyState === 'loading') {
 } else {
     console.log('Document already loaded, running init directly');
     init();
-} 
+}
+
+// Listen for config updates
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.type === 'configUpdated') {
+        config.N8N_WEBHOOK_URL = request.n8nWebhookUrl;
+    }
+}); 
