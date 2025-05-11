@@ -9,6 +9,13 @@ function injectAIButton() {
         return;
     }
 
+    // Check if button already exists to prevent duplicates
+    const existingButton = document.querySelector('button[data-test="AIButton"]');
+    if (existingButton) {
+        console.log('AI button already exists, skipping injection');
+        return;
+    }
+
     // Create button
     const aiButton = document.createElement('button');
     aiButton.className = 'ant-btn query-editor-controls-button m-l-5';
@@ -27,12 +34,26 @@ function generateChatSessionId() {
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
-// Store the chat session ID at the module level
-let chatSessionId = generateChatSessionId();
+// Store the chat session ID at the module level if not already defined
+if (typeof window.chatSessionId === 'undefined') {
+    // Generate and make it available globally
+    window.chatSessionId = generateChatSessionId();
+    console.log('Generated new chat session ID');
+} else {
+    console.log('Chat session ID already defined, reusing existing ID');
+}
 
 // Function to create and inject the chat panel
 function createChatPanel() {
     console.log('Creating chat panel...');
+
+    // Check if panel already exists to prevent duplicates
+    const existingPanel = document.getElementById('ai-chat-panel');
+    if (existingPanel) {
+        console.log('Chat panel already exists, skipping creation');
+        return;
+    }
+
     const panel = document.createElement('div');
     panel.id = 'ai-chat-panel';
     panel.className = 'ai-chat-panel hidden';
@@ -79,20 +100,26 @@ function toggleChatPanel(show = true) {
 }
 
 // Loading states with transitions
-const loadingStates = [
-    "Sending your request...",
-    "Thinking about the best approach...",
-    "Generating SQL query...",
-    "Taking a bit more time to ensure accuracy...",
-    "Analyzing the database schema...",
-    "Crafting the perfect query...",
-    "Double-checking the syntax...",
-    "Almost there..."
-];
+// Define loadingStates if not already defined
+if (typeof window.loadingStates === 'undefined') {
+    window.loadingStates = [
+        "Sending your request...",
+        "Thinking about the best approach...",
+        "Generating SQL query...",
+        "Taking a bit more time to ensure accuracy...",
+        "Analyzing the database schema...",
+        "Crafting the perfect query...",
+        "Double-checking the syntax...",
+        "Almost there..."
+    ];
+    console.log('Defined loading states');
+} else {
+    console.log('Loading states already defined, reusing existing states');
+}
 
 // Function to get a random loading state (excluding the current one)
 function getRandomLoadingState(currentState) {
-    const availableStates = loadingStates.filter(state => state !== currentState);
+    const availableStates = window.loadingStates.filter(state => state !== currentState);
     const randomIndex = Math.floor(Math.random() * availableStates.length);
     return availableStates[randomIndex];
 }
@@ -102,8 +129,20 @@ function getRandomDelay() {
     return Math.floor(Math.random() * 2000) + 1500; // Random delay between 1.5 and 3.5 seconds
 }
 
-let currentLoadingState = '';
-let loadingInterval;
+// Initialize loading state variables if not already defined
+if (typeof window.currentLoadingState === 'undefined') {
+    window.currentLoadingState = '';
+    console.log('Initialized currentLoadingState');
+} else {
+    console.log('currentLoadingState already defined, reusing existing variable');
+}
+
+if (typeof window.loadingInterval === 'undefined') {
+    window.loadingInterval = null;
+    console.log('Initialized loadingInterval');
+} else {
+    console.log('loadingInterval already defined, reusing existing variable');
+}
 
 // Function to show loading state
 function showLoadingState() {
@@ -114,20 +153,20 @@ function showLoadingState() {
     messagesContainer.appendChild(loadingDiv);
 
     // Start with a random state
-    currentLoadingState = loadingStates[Math.floor(Math.random() * loadingStates.length)];
-    loadingDiv.textContent = currentLoadingState;
+    window.currentLoadingState = window.loadingStates[Math.floor(Math.random() * window.loadingStates.length)];
+    loadingDiv.textContent = window.currentLoadingState;
 
     // Function to update loading state
     function updateLoadingState() {
-        currentLoadingState = getRandomLoadingState(currentLoadingState);
-        loadingDiv.textContent = currentLoadingState;
+        window.currentLoadingState = getRandomLoadingState(window.currentLoadingState);
+        loadingDiv.textContent = window.currentLoadingState;
 
         // Schedule next update with random delay
-        loadingInterval = setTimeout(updateLoadingState, getRandomDelay());
+        window.loadingInterval = setTimeout(updateLoadingState, getRandomDelay());
     }
 
     // Start the cycle with random delay
-    loadingInterval = setTimeout(updateLoadingState, getRandomDelay());
+    window.loadingInterval = setTimeout(updateLoadingState, getRandomDelay());
 }
 
 // Function to remove loading state
@@ -136,8 +175,9 @@ function removeLoadingState() {
     if (loadingDiv) {
         loadingDiv.remove();
     }
-    if (loadingInterval) {
-        clearInterval(loadingInterval);
+    if (window.loadingInterval) {
+        clearTimeout(window.loadingInterval);
+        window.loadingInterval = null;
     }
 }
 
@@ -246,16 +286,16 @@ async function sendMessage() {
         // Create basic auth header if credentials are provided
         const headers = {
             'Content-Type': 'application/json',
-            'chatSessionId': chatSessionId
+            'chatSessionId': window.chatSessionId
         };
 
-        if (config.N8N_USERNAME && config.N8N_PASSWORD) {
-            const auth = btoa(`${config.N8N_USERNAME}:${config.N8N_PASSWORD}`);
+        if (window.config.N8N_USERNAME && window.config.N8N_PASSWORD) {
+            const auth = btoa(`${window.config.N8N_USERNAME}:${window.config.N8N_PASSWORD}`);
             headers['Authorization'] = `Basic ${auth}`;
         }
 
         // Make API call to n8n using the URL from config
-        const response = await fetch(config.N8N_WEBHOOK_URL, {
+        const response = await fetch(window.config.N8N_WEBHOOK_URL, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify({
@@ -369,9 +409,21 @@ if (document.readyState === 'loading') {
     init();
 }
 
-// Listen for config updates
+// Listen for messages from background script
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    console.log('Content script received message:', request);
+
     if (request.type === 'configUpdated') {
-        config.N8N_WEBHOOK_URL = request.n8nWebhookUrl;
+        window.config.N8N_WEBHOOK_URL = request.n8nWebhookUrl;
+        window.config.N8N_USERNAME = request.n8nUsername;
+        window.config.N8N_PASSWORD = request.n8nPassword;
+        console.log('Configuration updated');
+    } else if (request.type === 'INIT_EXTENSION') {
+        console.log('Received initialization message from background script');
+        init();
     }
-}); 
+
+    // Always send a response to avoid "The message port closed before a response was received" error
+    sendResponse({ success: true });
+    return true;
+});
